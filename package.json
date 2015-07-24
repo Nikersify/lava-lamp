@@ -1,0 +1,14 @@
+{
+  "name": "lava-lamp",
+  "version": "0.0.1",
+  "description": "a youtube watch together thing",
+  "author": "nikersify",
+  "dependencies": {
+    "cson": "^3.0.1",
+    "express": "^4.13.1",
+    "jade": "^1.11.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  }
+}
