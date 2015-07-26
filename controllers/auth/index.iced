@@ -1,10 +1,10 @@
 express = require 'express'
 router = express.Router()
 
-router.use '/login', require('./auth')
+router.use '/steam', require('./steam')
 
-# /
+# login/
 router.get '/', (req, res) ->
-  res.render 'index', user: req.user
+  res.render 'login'
 
 module.exports = router

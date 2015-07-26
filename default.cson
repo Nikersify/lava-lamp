@@ -3,3 +3,6 @@
 dev: false
 server:
   port: 80
+  secret: 'mash your head against the keyboard here'
+steam:
+  apikey: '...'

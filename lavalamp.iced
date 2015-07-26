@@ -2,6 +2,8 @@
 
 express = require 'express'
 repl = require 'repl'
+passport = require('passport')
+session = require('express-session')
 
 app = express()
 
@@ -12,6 +14,22 @@ Lamp =
   config: config
 
 global.Lamp = Lamp;
+
+
+passport.serializeUser (user, done) ->
+  done null, user
+passport.deserializeUser (obj, done) ->
+  done null, obj
+
+ensureAuthenticated = (req, res, next) ->
+  if req.isAuthenticated()
+    next(null)
+  else
+    res.redirect '/login'
+
+app.use session secret: Lamp.config.server.secret
+app.use passport.initialize()
+app.use passport.session()
 
 app.set('view engine', 'jade')
 app.use express.static __dirname + '/public'
