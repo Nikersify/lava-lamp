@@ -4,6 +4,9 @@ head
   script(src='http://cdn.jsdelivr.net/zurb/foundation-apps-1.1.0.min.js')
   script(src='http://cdn.jsdelivr.net/zurb/foundation-apps-templates-1.1.0.min.js')
 body
-  h1 work?
-  h2 #{user}
-  
+  h1 main page
+  if user
+    p #{user}
+    a(href='./logout') logout
+  else
+    a(href='./login') login
