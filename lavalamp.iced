@@ -1,5 +1,8 @@
 # hello
 
+iced = require('iced-coffee-script').iced
+global.iced = iced
+
 express = require 'express'
 repl = require 'repl'
 passport = require('passport')
@@ -14,10 +17,12 @@ config = require('./utils/config')
 
 Lamp =
   config: config
-  Database: redis.createClient()
 
 global.Lamp = Lamp;
 
+console.log "Attempting a connection to Redis at #{Lamp.config.redis.host}:#{Lamp.config.redis.port}"
+await Lamp.Database = redis.createClient Lamp.config.redis.port, Lamp.config.redis.host, Lamp.config.redis.options
+console.log "Connected to Redis"
 
 passport.serializeUser (user, done) ->
   done null, user

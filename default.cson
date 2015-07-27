@@ -1,6 +1,11 @@
 # edit me!
 
 dev: false
+redis:
+  host: '127.0.0.1'
+  port: 6379
+  options:
+    auth: null
 server:
   port: 80
   secret: 'mash your head against the keyboard here'
