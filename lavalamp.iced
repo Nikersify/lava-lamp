@@ -29,6 +29,8 @@ app.use session
     client: Lamp.Database
     db: 1
   secret: Lamp.config.server.secret
+  resave: false
+  saveUninitialized: false
 
 app.use passport.initialize()
 app.use passport.session()
