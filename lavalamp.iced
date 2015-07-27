@@ -4,6 +4,8 @@ express = require 'express'
 repl = require 'repl'
 passport = require('passport')
 session = require('express-session')
+redis = require 'redis'
+RedisStore = require('connect-redis')(session)
 
 app = express()
 
@@ -12,6 +14,7 @@ config = require('./utils/config')
 
 Lamp =
   config: config
+  Database: redis.createClient()
 
 global.Lamp = Lamp;
 
@@ -21,13 +24,12 @@ passport.serializeUser (user, done) ->
 passport.deserializeUser (obj, done) ->
   done null, obj
 
-ensureAuthenticated = (req, res, next) ->
-  if req.isAuthenticated()
-    next(null)
-  else
-    res.redirect '/login'
+app.use session
+  store: new RedisStore
+    client: Lamp.Database
+    db: 1
+  secret: Lamp.config.server.secret
 
-app.use session secret: Lamp.config.server.secret
 app.use passport.initialize()
 app.use passport.session()
 
