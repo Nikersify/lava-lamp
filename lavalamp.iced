@@ -9,7 +9,7 @@ RedisStore = require('connect-redis')(session)
 
 app = express()
 
-# load config
+# load config, crash if not present
 config = require('./utils/config')
 
 Lamp =
