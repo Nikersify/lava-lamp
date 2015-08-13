@@ -1,7 +1,8 @@
 express = require 'express'
-router = express.Router()
 passport = require 'passport'
+router = express.Router()
 SteamStrategy = require('passport-steam').Strategy
+User = require('../../models/User')
 
 passport.use new SteamStrategy
   apiKey: Lamp.config.steam.apikey
@@ -21,6 +22,10 @@ passport.authenticate('steam', failureRedirect: '/login'),
 router.get '/return',
 passport.authenticate('steam', failureRedirect: '/login'),
 (req, res) ->
+  await User.getOrCreate null, 'steam', req.user.id, defer user
+  user.setProp 'steamID', req.user.id
+  user.setProp 'displayName', req.user.displayName
+
   res.redirect '/'
 
 router.get '/logout', (req, res) ->

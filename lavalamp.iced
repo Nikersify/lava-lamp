@@ -4,10 +4,12 @@ iced = require('iced-coffee-script').iced
 global.iced = iced
 
 express = require 'express'
-repl = require 'repl'
-passport = require('passport')
-session = require('express-session')
+passport = require 'passport'
 redis = require 'redis'
+repl = require 'repl'
+session = require 'express-session'
+User = require './models/User'
+
 RedisStore = require('connect-redis')(session)
 
 app = express()
@@ -23,16 +25,20 @@ global.Lamp = Lamp;
 console.log "Attempting a connection to Redis at #{Lamp.config.redis.host}:#{Lamp.config.redis.port}"
 await Lamp.Database = redis.createClient Lamp.config.redis.port, Lamp.config.redis.host, Lamp.config.redis.options
 console.log "Connected to Redis"
+await Lamp.Database.select Lamp.config.redis.db
+console.log "Selected db #{Lamp.config.redis.db}"
 
 passport.serializeUser (user, done) ->
-  done null, user
-passport.deserializeUser (obj, done) ->
-  done null, obj
+  console.log "USER.ID", user.id
+  done null, user.id
+passport.deserializeUser (id, done) ->
+  console.log "ID", id
+  done null, new User(null, 'steam', id)
 
 app.use session
   store: new RedisStore
     client: Lamp.Database
-    db: 1
+    db: Lamp.config.redis.db
   secret: Lamp.config.server.secret
   resave: false
   saveUninitialized: false
@@ -40,7 +46,7 @@ app.use session
 app.use passport.initialize()
 app.use passport.session()
 
-app.set('view engine', 'jade')
+app.set 'view engine', 'jade'
 app.use express.static __dirname + '/public'
 app.use require './controllers'
 
