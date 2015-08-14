@@ -29,11 +29,10 @@ await Lamp.Database.select Lamp.config.redis.db
 console.log "Selected db #{Lamp.config.redis.db}"
 
 passport.serializeUser (user, done) ->
-  console.log "USER.ID", user.id
-  done null, user.id
-passport.deserializeUser (id, done) ->
-  console.log "ID", id
-  done null, new User(null, 'steam', id)
+  done null, user.identifier
+passport.deserializeUser (identifier, done) ->
+  await User.getOrCreate identifier, defer user
+  done null, user
 
 app.use session
   store: new RedisStore
@@ -48,6 +47,7 @@ app.use passport.session()
 
 app.set 'view engine', 'jade'
 app.use express.static __dirname + '/public'
+app.use require './middleware/auth'
 app.use require './controllers'
 
 server = app.listen 3000, ->

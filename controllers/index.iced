@@ -1,6 +1,9 @@
 express = require 'express'
 router = express.Router()
 
+# r/
+router.use '/r', require('./room')
+
 # login/
 router.use '/login', require('./auth')
 
@@ -11,6 +14,6 @@ router.get '/logout', (req, res) ->
 
 # /
 router.get '/', (req, res) ->
-  res.render 'index', user: req.user
+  res.render 'index', user: req.user.all
 
 module.exports = router

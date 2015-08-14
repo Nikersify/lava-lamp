@@ -1,37 +1,26 @@
 class module.exports
-  constructor: (@id, @loginType, @loginID) ->
+  constructor: (@identifier) ->
 
-  exists: ->
-    await Lamp.Database.exists "user:#{@id}", defer err, reply
-    if err?
-      console.error 'Something went wrong'
-    if reply == 1
-      return true
+  get: (key, callback) ->
+    await Lamp.Database.hget "user:#{@identifier}", key, defer err, reply
+    callback? err, reply
+
+  set: (key, value, callback) ->
+    await Lamp.Database.hset "user:#{@identifier}", key, value, defer err, reply
+    callback? err, reply
+
+  hmset: (obj, callback) ->
+    await Lamp.Database.hmset "user:#{@identifier}", obj, defer err, reply
+    callback? err, reply
+
+  hgetall: (callback) ->
+    await Lamp.Database.hgetall "user:#{@identifier}", defer err, obj
+    callback? err, obj
+
+  @getOrCreate: (identifier, callback) ->
+    await Lamp.Database.exists "user:#{identifier}", defer err, userExists
+    # TODO: createdAt time
+    if userExists
+      callback new @ identifier
     else
-      return false
-
-  setProp: (key, value) ->
-    await Lamp.Database.hset "user:#{@id}", key, value, defer err, reply
-    if reply == '1' then true else false
-
-  getProp: (key) ->
-    await Lamp.Database.hget "user:#{@id}", key, defer err, reply
-    reply
-
-  @getOrCreate: (id, loginType, loginID, cb) ->
-    await Lamp.Database.exists "user:#{id}", defer err, userExists
-    if !userExists # 0/1
-      await Lamp.Database.hget "user:steamids", loginID, defer err, IDexists
-      if IDexists?
-        id = IDexists
-        console.log "old steam user #{loginID} #{id}"
-      else
-        # new user
-        await Lamp.Database.incr 'next_user_id', defer err, nextID
-        console.log 'NEXTID', nextID
-        id = nextID
-        console.log 'loginType', loginType
-        if loginType? and loginType == 'steam'
-          Lamp.Database.hset 'user:steamids', loginID, id
-          console.log "new steam user #{loginID} #{id}"
-    cb new @ id, loginType, loginID
+      callback new @ identifier

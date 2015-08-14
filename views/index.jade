@@ -1,12 +1,15 @@
 head
-  link(rel='stylesheet', href='http://cdn.jsdelivr.net/zurb/foundation-apps-1.1.0.min.css')
-  script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js')
-  script(src='http://cdn.jsdelivr.net/zurb/foundation-apps-1.1.0.min.js')
-  script(src='http://cdn.jsdelivr.net/zurb/foundation-apps-templates-1.1.0.min.js')
+  //- fish
 body
   h1 main page
   if user
     p #{user}
+    ul
+      li provider #{user.provider}
+      li steamID #{user.steamID}
+      li nickname #{user.nickname}
+      li 
+        img(src=user.avatar)
     a(href='./logout') logout
   else
     a(href='./login') login
