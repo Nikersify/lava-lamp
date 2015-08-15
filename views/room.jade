@@ -1,5 +1,13 @@
-h1 welcome to #{room}!
-ul
-  li steamID #{user.steamID}
-  li name #{user.name}
-  li id #{user.id}
+head
+  script(type="application/javascript", src="/socket.io/socket.io.js")
+  script(type="application/javascript", src="/js/room.js")
+  link(rel="stylesheet", type="text/css", href="/css/room.css")
+body
+  h1 welcome to #{roomName}!
+  if user
+    ul
+      li provider #{user.provider}
+      li steamID #{user.steamID}
+      li nickname #{user.nickname}
+      li 
+        img(src=user.avatar)
