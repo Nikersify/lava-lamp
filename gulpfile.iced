@@ -23,7 +23,7 @@ gulp.task 'js', ->
     # TODO: fix this too
     #.pipe browserSync.reload()
 
-gulp.task 'watch', ->
+gulp.task 'watch', ['sass', 'js'], ->
   gulp.watch 'src/sass/*.sass', ['sass']
   gulp.watch 'src/coffee/*.coffee', ['js']
 

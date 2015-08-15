@@ -2,7 +2,7 @@ express = require 'express'
 router = express.Router()
 
 # r/
-router.use '/r', require('./room')
+router.use ['/r', '/room'], require('./room')
 
 # login/
 router.use '/login', require('./auth')

@@ -1,4 +1,5 @@
 head
+  script(type="application/javascript", src="https://code.jquery.com/jquery-2.1.4.min.js")
   script(type="application/javascript", src="/socket.io/socket.io.js")
   script(type="application/javascript", src="/js/room.js")
   link(rel="stylesheet", type="text/css", href="/css/room.css")
@@ -11,3 +12,4 @@ body
       li nickname #{user.nickname}
       li 
         img(src=user.avatar)
+  .serverMessages
