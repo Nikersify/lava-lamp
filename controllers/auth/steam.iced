@@ -9,7 +9,7 @@ passport.use new SteamStrategy
   returnURL: 'http://localhost:3000/login/steam/return'
   realm: 'http://localhost:3000/'
 , (identifier, profile, done) ->
-  profile.identifier = identifier
+  profile.identifier = profile.provider + ':' + profile.id
   console.log "PROFILE", profile
   done null, profile
 

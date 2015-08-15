@@ -7,18 +7,18 @@ express = require 'express'
 passport = require 'passport'
 redis = require 'redis'
 repl = require 'repl'
-session = require 'express-session'
 User = require './models/User'
 
-RedisStore = require('connect-redis')(session)
-
 app = express()
+server = require('http').Server(app)
+io = require('socket.io')(server)
 
 # load config, crash if not present
 config = require('./utils/config')
 
 Lamp =
   config: config
+  io: io
 
 global.Lamp = Lamp;
 
@@ -34,13 +34,7 @@ passport.deserializeUser (identifier, done) ->
   await User.getOrCreate identifier, defer user
   done null, user
 
-app.use session
-  store: new RedisStore
-    client: Lamp.Database
-    db: Lamp.config.redis.db
-  secret: Lamp.config.server.secret
-  resave: false
-  saveUninitialized: false
+app.use require './middleware/session'
 
 app.use passport.initialize()
 app.use passport.session()
@@ -50,7 +44,9 @@ app.use express.static __dirname + '/public'
 app.use require './middleware/auth'
 app.use require './controllers'
 
-server = app.listen 3000, ->
+require './sockets'
+
+server.listen 3000, ->
   console.log 'listening on port 3000'
 
 r = repl.start

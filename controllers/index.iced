@@ -14,6 +14,6 @@ router.get '/logout', (req, res) ->
 
 # /
 router.get '/', (req, res) ->
-  res.render 'index', user: req.user.all
+  res.render 'index', user: req.userData
 
 module.exports = router

@@ -17,6 +17,10 @@ class module.exports
     await Lamp.Database.hgetall "user:#{@identifier}", defer err, obj
     callback? err, obj
 
+  exists: (callback) ->
+    await Lamp.Database.exists "user:#{@identifier}", defer err, obj
+    callback? err, obj
+  
   @getOrCreate: (identifier, callback) ->
     await Lamp.Database.exists "user:#{identifier}", defer err, userExists
     # TODO: createdAt time

@@ -1,0 +1,25 @@
+class module.exports
+  constructor: (@name) ->
+    console.log "Room #{@name} constructed."
+
+  get: (key, callback) ->
+    await Lamp.Database.hget "room:#{@name}", key, defer err, reply
+    callback? err, reply
+
+  set: (key, value, callback) ->
+    await Lamp.Database.hset "room:#{@name}", key, value, defer err, reply
+    callback? err, reply
+
+  hmset: (obj, callback) ->
+    await Lamp.Database.hmset "room:#{@name}", obj, defer err, reply
+    callback? err, reply
+
+  hgetall: (callback) ->
+    await Lamp.Database.hgetall "room:#{@name}", defer err, obj
+    callback? err, obj
+
+  exists: (callback) ->
+    await Lamp.Database.exists "room:#{@name}", defer err, obj
+    callback? err, obj
+
+  create: (options, callback) ->

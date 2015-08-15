@@ -6,5 +6,6 @@ logs
 node_modules/
 
 # LavaLamp
+*.bat
 public/
 config.cson
