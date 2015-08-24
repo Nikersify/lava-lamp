@@ -3,6 +3,7 @@
 iced = require('iced-coffee-script').iced
 global.iced = iced
 
+bodyParser = require 'body-parser'
 express = require 'express'
 passport = require 'passport'
 redis = require 'redis'
@@ -38,6 +39,9 @@ app.use require './middleware/session'
 
 app.use passport.initialize()
 app.use passport.session()
+
+app.use bodyParser.urlencoded extended: false
+app.use bodyParser.json()
 
 app.set 'view engine', 'jade'
 app.use express.static __dirname + '/public'

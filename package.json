@@ -4,6 +4,7 @@
   "description": "a youtube watch together thing",
   "author": "nikersify",
   "dependencies": {
+    "body-parser": "^1.13.3",
     "connect-redis": "^2.4.1",
     "cson": "^3.0.1",
     "del": "^1.2.0",
