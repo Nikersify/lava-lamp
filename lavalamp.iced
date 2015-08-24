@@ -5,6 +5,7 @@ global.iced = iced
 
 bodyParser = require 'body-parser'
 express = require 'express'
+morgan = require 'morgan'
 passport = require 'passport'
 redis = require 'redis'
 repl = require 'repl'
@@ -29,6 +30,9 @@ console.log "Connected to Redis"
 await Lamp.Database.select Lamp.config.redis.db
 console.log "Selected db #{Lamp.config.redis.db}"
 
+
+app.use morgan('dev')
+
 passport.serializeUser (user, done) ->
   done null, user.identifier
 passport.deserializeUser (identifier, done) ->
@@ -49,6 +53,7 @@ app.use require './middleware/auth'
 app.use require './controllers'
 
 require './sockets'
+
 
 server.listen 3000, ->
   console.log 'listening on port 3000'

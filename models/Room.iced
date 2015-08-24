@@ -1,6 +1,5 @@
 class module.exports
   constructor: (@name) ->
-    console.log "Room #{@name} constructed."
 
   get: (key, callback) ->
     await Lamp.Database.hget "room:#{@name}", key, defer err, reply

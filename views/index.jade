@@ -13,3 +13,9 @@ body
     a(href='./logout') logout
   else
     a(href='./login') login
+  
+  form(action="/room/create" method="post")
+    p Create a room
+    input(type='text' name='room_name' value='parasol-w-dupie')
+    input(type='checkbox' name='private')
+    input(type='submit' value='Do the magic!')

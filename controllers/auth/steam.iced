@@ -1,4 +1,5 @@
 express = require 'express'
+moment = require 'moment'
 passport = require 'passport'
 router = express.Router()
 SteamStrategy = require('passport-steam').Strategy
@@ -10,7 +11,6 @@ passport.use new SteamStrategy
   realm: 'http://localhost:3000/'
 , (identifier, profile, done) ->
   profile.identifier = profile.provider + ':' + profile.id
-  console.log "PROFILE", profile
   done null, profile
 
 # login/steam/
@@ -26,10 +26,12 @@ passport.authenticate('steam', failureRedirect: '/login'),
   await User.getOrCreate req.user.identifier, defer user
   # TODO: cache avatars locally
   await user.hmset
+    identifier: req.user.identifier
     provider: 'steam'
     steamID: req.user.id
     nickname: req.user.displayName
     avatar: req.user.photos[2].value
+    createdAt: moment().unix()
   , defer err, reply
   res.redirect '/'
 
