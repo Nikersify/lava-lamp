@@ -5,8 +5,6 @@ io = Lamp.io
 room = io.of('/room')
 
 room.on 'connection', (socket) ->
-  global.debug = socket
-
   socket.data =
     user: {}
 

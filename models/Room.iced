@@ -23,10 +23,34 @@ class module.exports
     await Lamp.Database.exists "room:#{@name}", defer err, obj
     callback? err, obj
 
+  addPrivileged: (user, callback) ->
+    await Lamp.Database.sadd "room:#{@name}:privileged", user, defer err, reply
+    callback? err, reply
+
+  isPrivileged: (user, callback) ->
+    await Lamp.Database.sismember "room:#{@name}:privileged", user, defer err, reply
+    if reply == 1
+      callback? err, true
+    else
+      callback? err, false
+
+  allPrivileged: (callback) ->
+    await Lamp.Database.smembers "room:#{@name}:privileged", defer err, reply
+    callback? err, reply
+
+  countPrivileged: (callback) ->
+    await Lamp.Database.scard "room:#{@name}:privileged", defer err, reply
+    callback? err, reply
+
+  removePrivileged: (user, callback) ->
+    await Lamp.Database.srem "room:#{@name}:privileged", user, defer err, reply
+    callback? err, reply
+
   create: (options, callback) ->
     await @hmset
       name: @name
       createdAt: moment().unix()
       owner: options.owner
+      private: options.private
     , defer err, reply
     callback err, reply

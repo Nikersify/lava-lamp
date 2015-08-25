@@ -6,7 +6,6 @@ router = express.Router()
 # r/create
 router.post '/create', checkAuth, (req, res) ->
   room_name = req.body.room_name
-
   # room name regulationzz
 
   # can't be undefined
@@ -22,7 +21,6 @@ router.post '/create', checkAuth, (req, res) ->
         msg: 'You have to specify a room name!'
 
   # no spaces / %20
-  console.log "room_name #{room_name}"
   if room_name.indexOf(' ') > -1
     return res.render 'error',
       error:
@@ -37,8 +35,14 @@ router.post '/create', checkAuth, (req, res) ->
       error:
         msg: 'Room with that name does already exists :('
 
+  if req.body.private? and req.body.private == 'on'
+    roomPrivate = true
+  else
+    roomPrivate = false
+
   await room.create
     owner: req.userData.identifier
+    private: roomPrivate
   , defer err, reply
 
   if err?
@@ -54,11 +58,27 @@ router.get '/:room', (req, res) ->
   await room.exists defer err, exists
   if exists == 1
     await room.hgetall defer err, roomData
-    res.render 'room',
-      room: roomData
-      user: req.userData
-  else
-    res.render 'error',
+    if roomData.private
+      if req.userData.identifier is roomData.owner
+        return res.render 'room',
+          room: roomData
+          user: req.userData
+      else
+        await room.isPrivileged req.userData.identifier, defer err, privileged
+        if privileged
+          return res.render 'room',
+            room: roomData
+            user: req.userData
+
+      return res.render 'error',
+        error:
+          msg: 'This room is private.'
+    else # roomData.private
+      return res.render 'room',
+        room: roomData
+        user: req.userData
+  else # exists
+    return res.render 'error',
       error:
         msg: 'This room does not exist! :('
 
