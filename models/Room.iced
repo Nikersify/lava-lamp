@@ -1,3 +1,5 @@
+moment = require 'moment'
+
 class module.exports
   constructor: (@name) ->
 
@@ -22,3 +24,9 @@ class module.exports
     callback? err, obj
 
   create: (options, callback) ->
+    await @hmset
+      name: @name
+      createdAt: moment().unix()
+      owner: options.owner
+    , defer err, reply
+    callback err, reply

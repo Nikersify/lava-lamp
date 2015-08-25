@@ -1,6 +1,5 @@
 checkAuth = require '../middleware/checkAuth'
 express = require 'express'
-moment = require 'moment'
 Room = require '../models/Room'
 router = express.Router()
 
@@ -14,7 +13,7 @@ router.post '/create', checkAuth, (req, res) ->
   if !room_name?
     return res.render 'error',
       error:
-        msg: 'Something went wrong...'
+        msg: 'No form data received.'
 
   # can't be empty
   if room_name == ''
@@ -38,11 +37,14 @@ router.post '/create', checkAuth, (req, res) ->
       error:
         msg: 'Room with that name does already exists :('
 
-  await room.hmset
-    name: room_name
-    createdAt: moment().unix()
+  await room.create
     owner: req.userData.identifier
   , defer err, reply
+
+  if err?
+    return res.render 'error',
+      error:
+        msg: 'Something went wrong with the database... :|'
 
   res.redirect "/room/#{room_name}"
 
@@ -51,8 +53,9 @@ router.get '/:room', (req, res) ->
   room = new Room req.params.room
   await room.exists defer err, exists
   if exists == 1
+    await room.hgetall defer err, roomData
     res.render 'room',
-      roomName: req.params.room
+      room: roomData
       user: req.userData
   else
     res.render 'error',
