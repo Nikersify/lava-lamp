@@ -18,7 +18,7 @@ gulp.task 'js', ->
   gutil.log 'Compiling', gutil.colors.green('coffee'), 'files to', gutil.colors.green('js')
   await del 'public/js/', defer err
   gulp.src('src/coffee/*.coffee')
-    .pipe coffeeCompiler().on 'error', gutil.log
+    .pipe coffeeCompiler(bare: true).on 'error', gutil.log
     .pipe gulp.dest('./public/js')
     # TODO: fix this too
     #.pipe browserSync.reload()

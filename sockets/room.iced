@@ -7,10 +7,10 @@ room = io.of('/room')
 room.on 'connection', (socket) ->
   socket.data =
     user: {}
+    ready: false
 
   # if user is logged in
   if socket.request.session?.passport?.user?
-    socket.data.auth = true
 
     user = new User socket.request.session.passport.user
     await user.hgetall defer err, userinfo
@@ -18,15 +18,27 @@ room.on 'connection', (socket) ->
       msg: "Logged in as #{userinfo.nickname}, using #{userinfo.provider}."
 
     socket.data.user = userinfo
+    socket.data.ready = true
+
+    socket.emit 'ready',
+      user: socket.data.user
   else
-    socket.data.auth = false
+  
     # require a nickname
     socket.emit 'server message',
       msg: 'Not logged in, requiring a nickname.'
+
     socket.emit 'require nickname'
+
     socket.once 'send nickname', (data) ->
       socket.data.user.nickname = data.nickname
       socket.data.ready = true
+
+      socket.emit 'server message',
+        msg: "Identifying as #{socket.data.user.nickname}."
+
+      socket.emit 'ready',
+        user: socket.data.user
 
   socket.on 'handshake', (data) ->
     console.log 'DATAROOM', data.room

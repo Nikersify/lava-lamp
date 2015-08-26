@@ -1,18 +1,31 @@
 head
   script(type="application/javascript", src="https://code.jquery.com/jquery-2.1.4.min.js")
   script(type="application/javascript", src="/socket.io/socket.io.js")
-  script(type="application/javascript", src="/js/room.js")
+  script.
+    //- save data passed to the template to a js variable
+    room = !{JSON.stringify(room)}
   link(rel="stylesheet", type="text/css", href="/css/room.css")
 body
   if room.private == "true"
     h1 welcome to #{room.name} (private)!
   else
     h1 welcome to #{room.name}
+  h5 room info
+  ul
+    li name #{room.name}
+    li created #{room.createdAt}
+    li owner #{room.owner}
+    li private #{room.private}
   if user
+    h5 user info
     ul
+      li 
+        img(src=user.avatar style="max-height: 50px;")
+      li nickname #{user.nickname}
       li provider #{user.provider}
       li steamID #{user.steamID}
-      li nickname #{user.nickname}
-      li 
-        img(src=user.avatar)
+      li joined on #{user.createdAt}
+  #youtube_player
   .serverMessages
+  
+  script(type="application/javascript", src="/js/room.js")
