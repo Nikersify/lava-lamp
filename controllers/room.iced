@@ -56,16 +56,12 @@ router.post '/create', checkAuth, (req, res) ->
 router.get '/:room', (req, res) ->
   if !req.userData?
     req.userData = {}
-  console.log 'debug1'
   room = new Room req.params.room
   await room.exists defer err, exists
   if exists == 1
-    console.log 'debu2'
     await room.hgetall defer err, roomData
     if roomData.private == 'true'
-      console.log 'debug3'
       if req.userData.identifier is roomData.owner
-        console.log 'debug4'
         return res.render 'room',
           room: roomData
           user: req.userData

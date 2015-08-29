@@ -28,6 +28,14 @@ class module.exports
     callback? err, reply
 
   isPrivileged: (user, callback) ->
+    await Lamp.Database.hget "room:#{@name}", 'private', defer err, isPrivate
+    if isPrivate isnt "true"
+      return callback? err, true
+
+    await Lamp.Database.hget "room:#{@name}", 'owner', defer err, owner
+    if owner = user
+      return callback? err, true
+
     await Lamp.Database.sismember "room:#{@name}:privileged", user, defer err, reply
     if reply == 1
       callback? err, true

@@ -4,11 +4,14 @@ room.on 'server message', (data) ->
   console.log data
   $('.serverMessages').append("<div class='serverMessage'>#{data.msg}</div>")
 
-room.on 'require nickname', () ->
-  room.emit 'send nickname',
-    nickname: prompt('Enter a nickname:')
+.on 'connect', (data) ->
+  console.log 'Connected', data
 
-room.on 'connect', (data) ->
+.on 'require nickname', () ->
+  room.emit 'send nickname',
+    nickname: prompt 'Enter a nickname:'
+
+.on 'ready', (data) ->
   room.emit 'handshake',
     # ikr
     room: /.+?\/(?:r|room)\/([^\/\n\r?]+)\/?/.exec(location.href)[1]

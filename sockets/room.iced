@@ -23,7 +23,7 @@ room.on 'connection', (socket) ->
     socket.emit 'ready',
       user: socket.data.user
   else
-  
+
     # require a nickname
     socket.emit 'server message',
       msg: 'Not logged in, requiring a nickname.'
@@ -41,4 +41,19 @@ room.on 'connection', (socket) ->
         user: socket.data.user
 
   socket.on 'handshake', (data) ->
-    console.log 'DATAROOM', data.room
+    room = new Room data.room
+    await room.hgetall defer err, roomData
+    if socket.data?.ready is true
+      await room.isPrivileged socket.data.user.identifier, defer err, isPrivileged
+      if isPrivileged
+        socket.join(data.room)
+        socket.emit 'server message',
+          msg: "Joined #{data.room}."
+        socket.emit 'handshake success',
+          room: roomData
+          user: socket.data.user
+      else
+        socket.emit 'server message',
+          msg: "Hey wait, the you shouldn't be here!"
+        socket.emit 'server error',
+          msg: "Unauthorized."
