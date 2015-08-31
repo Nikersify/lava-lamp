@@ -54,6 +54,30 @@ class module.exports
     await Lamp.Database.srem "room:#{@name}:privileged", user, defer err, reply
     callback? err, reply
 
+  setPlaying: (data, callback) ->
+    await Lamp.Database.hmset "room:#{@name}:playing", data, defer err, reply
+    callback? err, reply
+
+  getPlaying: (callback) ->
+    await Lamp.Database.hgetall "room:#{@name}:playing", defer err, reply
+    callback? err, reply
+
+  # queue as a verb, "to queue"
+  queue: (data, callback) ->
+    # TODO: this
+
+  # whole queue
+  getQueue: (callback) ->
+    # TODO: this
+
+  # TODO: this
+
+  # getModerators:
+  #
+  # addModerator:
+  #
+  # removeModerator:
+
   create: (options, callback) ->
     await @hmset
       name: @name

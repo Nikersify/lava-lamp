@@ -1,6 +1,7 @@
 head
   script(type="application/javascript", src="https://code.jquery.com/jquery-2.1.4.min.js")
   script(type="application/javascript", src="/socket.io/socket.io.js")
+  script(type="application/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js")
   script.
     //- save data passed to the template to a js variable
     room = !{JSON.stringify(room)}
@@ -25,7 +26,27 @@ body
       li provider #{user.provider}
       li steamID #{user.steamID}
       li joined on #{user.createdAt}
-  #youtube_player
+  
+  #player_container_container(style='position: absolute; top: 20px; right: 20px;')
+    //- TODO: fullscreen mode
+    #player_container(style='position:relative')
+      #player_event_mask(style='\
+        position:absolute;\
+        top: 0;\
+        bottom: 0;\
+        left: 0;\
+        right: 0;\
+      ')
+      #youtube_player
+    br
+    input#playPauseBtn(type='button', value='Play/pause')
+    //- TODO: value from cookie/local storage
+    input#volumeRange(type='range', min='0', max='100', step='2', value='80')
+  
+  p Play a video
+  input#videoIdInput(type='text' style="width: 400px;" placeholder='https://www.youtube.com/watch?v=kbzL9PxtFf0')
+  input#videoIdSubmit(type='submit' value='Play!')
+    
   .serverMessages
   
   script(type="application/javascript", src="/js/room.js")
