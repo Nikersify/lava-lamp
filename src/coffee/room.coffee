@@ -25,16 +25,21 @@ roomNsp.on 'server message', (data) ->
   user = data.user
   nowPlaying = data.nowPlaying
 
-  if youtube.data.loaded
-    youtube.player.loadVideoById
-      videoId: data.id
-      startSeconds: moment().unix() - data.requestedAt
-  else
-    onYouTubeLoad = ->
+  onYouTubeLoad = ->
+
+    if data.nowPlaying.paused == "true"
+      youtube.player.cueVideoById
+        videoId: data.nowPlaying.id
+        startSeconds: data.nowPlaying.pausedAt
+      youtube.data.playing = false
+    else
       youtube.player.loadVideoById
         videoId: data.nowPlaying.id
         startSeconds: moment().unix() - parseInt(data.nowPlaying.requestedAt)
-      onYouTubeLoad = undefined
+
+      youtube.data.playing = true
+
+    onYouTubeLoad = undefined
 
 .on 'server error', (data) ->
   alert data.msg
@@ -111,7 +116,6 @@ $('#videoIdSubmit').click (e) ->
   # regex isn't that bad afterall
   regex = /(?:(?:v=)|(?:v\/)|youtu\.be\/)([^&\s#]+)/
   matches = regex.exec(id)
-  console.log matches
   try
     if matches?
       roomNsp.emit 'fiesta',

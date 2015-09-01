@@ -62,6 +62,23 @@ class module.exports
     await Lamp.Database.hgetall "room:#{@name}:playing", defer err, reply
     callback? err, reply
 
+  pause: (callback) ->
+    await Lamp.Database.hset "room:#{@name}:playing", "paused", true, defer()
+    await Lamp.Database.hget "room:#{@name}:playing", "resumeAt", defer err, resumeAt
+    # save second for youtube player
+    await Lamp.Database.hset "room:#{@name}:playing", "pausedAt", moment().unix() - parseInt(resumeAt), defer err, reply
+
+    callback? err, reply
+
+  play: (callback) ->
+    await Lamp.Database.hget "room:#{@name}:playing", "pausedAt", defer err, pausedAt
+
+    await Lamp.Database.hset "room:#{@name}:playing", "resumeAt", moment().unix() - parseInt(pausedAt), defer err, reply
+
+    await Lamp.Database.hset "room:#{@name}:playing", "paused", false, defer err, reply
+
+    calback? err, reply
+
   # queue as a verb, "to queue"
   queue: (data, callback) ->
     # TODO: this

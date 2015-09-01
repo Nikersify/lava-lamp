@@ -96,6 +96,7 @@ room.on 'connection', (socket) ->
               id: data.data.id
               requestedBy: tmpIdentifier
               requestedAt: moment().unix()
+              resumeAt: moment().unix()
               loggedIn: socket.data.user.loggedIn
             , defer err, reply
 
@@ -106,9 +107,13 @@ room.on 'connection', (socket) ->
               requesterLoggedIn: socket.data.user.loggedIn
 
           when 'play'
+            socket.data.room.play()
+
             room.to(socket.data.roomName).emit 'fiesta',
               type: 'play'
 
           when 'pause'
+            socket.data.room.pause()
+
             room.to(socket.data.roomName).emit 'fiesta',
               type: 'pause'
